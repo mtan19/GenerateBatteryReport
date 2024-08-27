@@ -1,8 +1,30 @@
 echo off
+
+REM Create FolderName and Folder
 set FolderName=%USERPROFILE%\Desktop\battery-report
 if exist %FolderName% ( echo:Folder "%FolderName%" Already Exists ) else ( echo:Folder "%FolderName%" Doesn't Exist, Creating Folder & mkdir "%FolderName%")
-set TimeStamp=%DATE:~0,2%%DATE:~3,3%%DATE:~7,2%-%time:~0,2%%time:~3,2%%time:~6,2%
+
+REM Create TimeStamp
+set FormattedTime=%time%
+set FormattedTime=%FormattedTime::=%
+set FormattedTime=%FormattedTime:.=%
+set FormattedTime=%FormattedTime: =%
+set FormattedTime=%FormattedTime:-=%
+REM tried to filter out for characters that cannot exist in a windows file name (<,>,/,\,|,?,*,") but caused the program to malfunction
+set FormattedDate=%date%
+set FormattedDate=%FormattedDate::=%
+set FormattedDate=%FormattedDate:.=%
+set FormattedDate=%FormattedDate: =%
+set FormattedDate=%FormattedDate:-=%
+set TimeStamp=%FormattedDate%-%FormattedTime%
+
+REM Create FilePath (name for the html file)
 set FilePath=%FolderName%\battery-report-%TimeStamp%.html
+
+REM Run powercfg /batteryreport
 powercfg /batteryreport /output "%FilePath%"
+
+REM Open html file
 %FilePath%
+
 echo:Done
